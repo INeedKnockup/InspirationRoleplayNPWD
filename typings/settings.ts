@@ -13,7 +13,12 @@ export interface SettingOption<T = any> {
 export enum KvpItems {
   NPWD_RINGTONE = 'npwd-ringtone',
   NPWD_NOTIFICATION = 'npwd-notification',
+  NPWD_FRAME = 'npwd-frame',
 }
+
+export type IPhoneLocalStorage = {
+  [key: string]: IPhoneSettings;
+};
 
 export interface IPhoneSettings {
   language: SettingOption;

@@ -1,30 +1,30 @@
-fx_version "cerulean"
-game "gta5"
-description 'js runtime monkaW'
-authors { "itschip",  "erik-sn", "TasoOneAsia", "kidz", "RockySouthpaw"}
-version '1.5.3'
+fx_version("cerulean")
+game("gta5")
+description("js runtime monkaW")
+authors({ "itschip", "erik-sn", "TasoOneAsia", "kidz", "RockySouthpaw", "SamShanks", "c-wide", "mojito" })
+version("v1.7.1")
+client_scripts({
+	"dist/game/client/client.js",
+	"dist/game/client/*.lua",
+	"apps/game/client/*.lua",
+})
 
-client_scripts {
-    'resources/dist/client/client.js',
-    'resources/client/*.lua'
-}
+server_script({
+	-- This is a file that lives purely in source code and isn't compiled alongside
+	-- rest of the release. It's used to detect whether a user can read or not.
+	"build-detector.js",
+	"dist/game/server/server.js",
+})
 
-server_script {
-    -- This is a file that lives purely in source code and isn't compiled alongside
-    -- rest of the release. It's used to detect whether a user can read or not.
-    'build-detector.js',
-    'resources/dist/server/server.js'
-}
+ui_page("dist/html/index.html")
 
-ui_page 'resources/html/index.html'
+files({
+	"config.json",
+	"dist/html/index.html",
+	"dist/html/**/*",
+})
 
-files {
-    'config.json',
-    'resources/html/index.html',
-    'resources/html/**/*',
-}
-
-dependency {
-	'screenshot-basic',
-  'pma-voice'
-}
+dependency({
+	"screenshot-basic",
+	"pma-voice",
+})

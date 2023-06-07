@@ -6,6 +6,9 @@
 # ALTER TABLE npwd_messages ADD COLUMN `is_embed` tinyint(4) NOT NULL DEFAULT 0;
 # ALTER TABLE npwd_messages ADD COLUMN `embed` varchar(512) NOT NULL DEFAULT '';
 
+#match voice messages update
+# ALTER TABLE npwd_match_profiles ADD COLUMN `voiceMessage` varchar(512) DEFAULT NULL;
+
 CREATE TABLE IF NOT EXISTS `npwd_twitter_profiles`
 (
     `id`           int         NOT NULL AUTO_INCREMENT,
@@ -63,16 +66,17 @@ CREATE TABLE IF NOT EXISTS `npwd_twitter_likes`
 
 CREATE TABLE IF NOT EXISTS `npwd_match_profiles`
 (
-    `id`         int          NOT NULL AUTO_INCREMENT,
-    `identifier` varchar(48)  NOT NULL COLLATE 'utf8mb4_general_ci',
-    `name`       varchar(90)  NOT NULL,
-    `image`      varchar(255) NOT NULL,
-    `bio`        varchar(512)          DEFAULT NULL,
-    `location`   varchar(45)           DEFAULT NULL,
-    `job`        varchar(45)           DEFAULT NULL,
-    `tags`       varchar(255) NOT NULL DEFAULT '',
-    `createdAt`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updatedAt`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`            int          NOT NULL AUTO_INCREMENT,
+    `identifier`    varchar(48)  NOT NULL COLLATE 'utf8mb4_general_ci',
+    `name`          varchar(90)  NOT NULL,
+    `image`         varchar(255) NOT NULL,
+    `bio`           varchar(512)          DEFAULT NULL,
+    `location`      varchar(45)           DEFAULT NULL,
+    `job`           varchar(45)           DEFAULT NULL,
+    `tags`          varchar(255) NOT NULL DEFAULT '',
+    `voiceMessage`  varchar(512)         DEFAULT NULL,
+    `createdAt`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updatedAt`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `identifier_UNIQUE` (`identifier`)
 );
@@ -192,3 +196,42 @@ CREATE TABLE IF NOT EXISTS `npwd_phone_gallery`
     PRIMARY KEY (id),
     INDEX `identifier` (`identifier`)
 );
+
+CREATE TABLE `npwd_darkchat_channels` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`channel_identifier` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`label` VARCHAR(255) NULL DEFAULT '' COLLATE 'utf8mb4_general_ci',
+	PRIMARY KEY (`id`) USING BTREE,
+	UNIQUE INDEX `darkchat_channels_channel_identifier_uindex` (`channel_identifier`) USING BTREE
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=20
+;
+
+CREATE TABLE `npwd_darkchat_channel_members` (
+	`channel_id` INT(11) NOT NULL,
+	`user_identifier` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`is_owner` TINYINT(4) NOT NULL DEFAULT '0',
+	INDEX `npwd_darkchat_channel_members_npwd_darkchat_channels_id_fk` (`channel_id`) USING BTREE,
+	CONSTRAINT `npwd_darkchat_channel_members_npwd_darkchat_channels_id_fk` FOREIGN KEY (`channel_id`) REFERENCES `npwd_darkchat_channels` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `npwd_darkchat_messages` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`channel_id` INT(11) NOT NULL,
+	`message` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`user_identifier` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`createdAt` TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	`is_image` TINYINT(4) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`) USING BTREE,
+	INDEX `darkchat_messages_darkchat_channels_id_fk` (`channel_id`) USING BTREE,
+	CONSTRAINT `darkchat_messages_darkchat_channels_id_fk` FOREIGN KEY (`channel_id`) REFERENCES `npwd_darkchat_channels` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=31
+;
